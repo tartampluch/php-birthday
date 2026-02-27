@@ -1,0 +1,57 @@
+name: CI Quality Check
+
+# ==============================================================================
+# TRIGGER CONFIGURATION
+# ==============================================================================
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ----------------------------------------------------------------------------
+  # Testing
+  # Runs the PHPUnit test suite across multiple PHP versions to guarantee
+  # backward and forward compatibility.
+  # ----------------------------------------------------------------------------
+  test:
+    name: PHPUnit Tests (PHP ${{ matrix.php-versions }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Matrix testing: We test against the lowest supported version, 
+        # the current version, and the upcoming/latest version.
+        php-versions: ['8.4', '8.5']
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          # Explicitly request the extensions needed by the app and Composer
+          extensions: curl, mbstring, apcu, openssl
+          # Disable Xdebug to make the test runner significantly faster in CI
+          coverage: none
+        env:
+          fail-fast: true
+
+      - name: Validate Composer Configuration
+        run: composer validate --strict
+
+      - name: Install Development Dependencies (PHPUnit)
+        # --no-progress makes the CI log cleaner. 
+        # --prefer-dist downloads zip archives instead of git cloning packages.
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run Unit Tests
+        # Runs the strict test suite using the exact same command as the local VS Code task
+        run: vendor/bin/phpunit --testdox --display-all-issues

@@ -1,0 +1,9 @@
+{
+    "name": "tartampluch/php-birthday",
+    "description": "A high-performance, privacy-first web engine that bridges your contacts and your calendar.",
+    "type": "project",
+    "license": "Unlicense",
+    "require-dev": {
+        "phpunit/phpunit": "^13.0"
+    }
+}

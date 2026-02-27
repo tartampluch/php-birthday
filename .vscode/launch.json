@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug PHP Birthday",
+            "type": "php",
+            "request": "launch",
+            "runtimeExecutable": "php",
+            "runtimeArgs": [
+                "-c", "${workspaceFolder}/.php-env/php.ini",
+                "-S", "localhost:8000",
+                "-t", "${workspaceFolder}"
+            ],
+            "cwd": "${workspaceFolder}",
+            "port": 9003,
+            "env": {
+                "XDEBUG_MODE": "debug"
+            }
+        }
+    ]
+}
