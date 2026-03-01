@@ -67,7 +67,7 @@ class Application
             // 3. Cache Miss -> execute full heavy pipeline
             else {
                 $fetcher = new VCardFetcher($this->translator);
-                $rawVcard = $fetcher->fetch($sourceUrl, $config[Constants::CONFIG_USER], $config[Constants::CONFIG_PASS]);
+                $rawVcard = $fetcher->fetch($sourceUrl, $config[Constants::CONFIG_USER], $config[Constants::CONFIG_PASS], $config[Constants::CONFIG_MODE] === Constants::MODE_URL);
 
                 $parser = new VCardParser($this->translator);
                 $contacts = $parser->parse($rawVcard);
